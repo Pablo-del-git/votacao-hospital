@@ -95,7 +95,7 @@
   </style>
 </head>
 <body>
-
+ 
 <div class="topbar">
   <div class="topbar-logo-area">
     <div class="topbar-logo-circle">🏥</div>
@@ -106,14 +106,14 @@
     <div class="subtitle">Processo Eleitoral Interno</div>
   </div>
 </div>
-
+ 
 <div class="hero">
   <h2>Eleição — Diretor Clínico</h2>
   <p>Votação sigilosa com validação por CRM · Cada médico vota uma única vez</p>
 </div>
-
+ 
 <div class="container">
-
+ 
   <div id="voted-screen" style="display:none;">
     <div class="card">
       <div class="voted-screen">
@@ -129,13 +129,13 @@
     </div>
     <div class="footer">CHS — João Paulo II · Sistema de Votação Interno</div>
   </div>
-
+ 
   <div id="main-screen">
     <div class="tab-row">
       <button class="tab-btn active" onclick="showTab('vote')">🗳️ Votação</button>
       <button class="tab-btn" onclick="showTab('admin')">🔒 Administração</button>
     </div>
-
+ 
     <div id="tab-vote">
       <div id="vote-alert"></div>
       <div class="card">
@@ -152,7 +152,7 @@
       </div>
       <button class="vote-btn" onclick="submitVote()">✔ Confirmar Voto</button>
     </div>
-
+ 
     <div id="tab-admin" style="display:none;">
       <div id="admin-login-area">
         <div class="card">
@@ -163,7 +163,7 @@
           <div id="admin-login-alert" style="margin-top:12px;"></div>
         </div>
       </div>
-
+ 
       <div id="admin-panel" style="display:none;">
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
@@ -214,17 +214,17 @@
       </div>
     </div>
   </div>
-
+ 
   <div class="footer" id="main-footer">CHS — João Paulo II · Sistema de Votação Interno</div>
 </div>
-
+ 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import {
     getFirestore, doc, getDoc, setDoc, updateDoc, collection,
     getDocs, addDoc, deleteDoc, serverTimestamp, increment
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+ 
   const firebaseConfig = {
     apiKey: "AIzaSyBFKUC8lrBi0_UPwjsIDjXmpO-OpiXxnak",
     authDomain: "votaao-hospital.firebaseapp.com",
@@ -233,16 +233,16 @@
     messagingSenderId: "570331773780",
     appId: "1:570331773780:web:d74149b64044077bf166c1"
   };
-
+ 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-
+ 
   let selectedCandId = null;
   let adminLogged = false;
   let candidatesCache = [];
   let voteLogCache = [];
   let authCRMsCache = [];
-
+ 
   async function init() {
     const cfgRef = doc(db, 'config', 'settings');
     const cfgSnap = await getDoc(cfgRef);
@@ -251,14 +251,14 @@
     }
     loadCandidates();
   }
-
+ 
   async function loadCandidates() {
     const snap = await getDocs(collection(db, 'candidates'));
     candidatesCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     candidatesCache.sort((a, b) => (a.order || 0) - (b.order || 0));
     renderCandidateGrid();
   }
-
+ 
   function renderCandidateGrid() {
     const g = document.getElementById('cand-grid');
     if (!candidatesCache.length) {
@@ -272,9 +272,9 @@
         <div class="cspec">${c.spec}</div>
       </div>`).join('');
   }
-
+ 
   window._selectCand = (id) => { selectedCandId = id; renderCandidateGrid(); };
-
+ 
   window.submitVote = async () => {
     const crm = document.getElementById('crm-input').value.trim();
     const name = document.getElementById('voter-name').value.trim();
@@ -299,7 +299,7 @@
     document.getElementById('main-footer').style.display = 'none';
     document.getElementById('voted-screen').style.display = 'block';
   };
-
+ 
   window.checkAdmin = async () => {
     const p = document.getElementById('admin-pass').value;
     const cfgSnap = await getDoc(doc(db, 'config', 'settings'));
@@ -313,14 +313,14 @@
       setAlert('admin-login-alert', 'error', 'Senha incorreta.');
     }
   };
-
+ 
   window.logoutAdmin = () => {
     adminLogged = false;
     document.getElementById('admin-login-area').style.display = 'block';
     document.getElementById('admin-panel').style.display = 'none';
     document.getElementById('admin-pass').value = '';
   };
-
+ 
   async function renderAdminPanel() {
     await loadCandidates();
     const logSnap = await getDocs(collection(db, 'voteLog'));
@@ -333,7 +333,7 @@
     const eligible = authCRMsCache.length || votedSnap.size;
     const voted = votedSnap.size;
     const sorted = [...candidatesCache].sort((a, b) => (b.votes || 0) - (a.votes || 0));
-
+ 
     document.getElementById('admin-results').innerHTML = `
       <div class="stat-row">
         <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-lbl">Total de votos</div></div>
@@ -355,7 +355,7 @@
         </tbody>
       </table>
       </div>`;
-
+ 
     const logSorted = [...voteLogCache].sort((a, b) => (b.ts?.seconds || 0) - (a.ts?.seconds || 0));
     document.getElementById('admin-vote-log').innerHTML = logSorted.length ? `
       <div style="overflow-x:auto;">
@@ -372,7 +372,7 @@
         </tbody>
       </table>
       </div>` : '<div class="list-row" style="color:#7a9db0;">Nenhum voto registrado.</div>';
-
+ 
     document.getElementById('auth-crm-list').innerHTML = authCRMsCache.length ? authCRMsCache.map(c => `
       <div class="list-row">
         <span style="font-weight:600;">${c.crm}</span>
@@ -382,7 +382,7 @@
         </span>
       </div>`).join('') :
       '<div class="list-row" style="color:#7a9db0;font-size:13px;">Nenhum CRM cadastrado ainda.</div>';
-
+ 
     document.getElementById('cand-admin-list').innerHTML = candidatesCache.map(c => `
       <div class="list-row">
         <span style="font-weight:600;font-size:13px;">${c.name}</span>
@@ -393,7 +393,7 @@
         </span>
       </div>`).join('') || '<p style="color:#7a9db0;font-size:13px;padding:8px 0;">Nenhum candidato cadastrado.</p>';
   }
-
+ 
   window.addAuthCRM = async () => {
     const v = document.getElementById('new-crm').value.trim();
     if (!v || v.length < 4) return;
@@ -402,7 +402,7 @@
     document.getElementById('new-crm').value = '';
     renderAdminPanel();
   };
-
+ 
   window.addBulkCRMs = async () => {
     const raw = document.getElementById('bulk-crms').value;
     const crms = raw.split(/[\s,;\n]+/).map(c => c.replace(/\D/g, '')).filter(c => c.length >= 4);
@@ -418,12 +418,12 @@
     alert(`${added} CRM(s) adicionado(s) com sucesso!`);
     renderAdminPanel();
   };
-
+ 
   window._removeAuthCRM = async (id) => {
     await deleteDoc(doc(db, 'authorizedCRMs', id));
     renderAdminPanel();
   };
-
+ 
   window.addCandidate = async () => {
     const name = document.getElementById('new-cand-name').value.trim();
     const spec = document.getElementById('new-cand-spec').value.trim();
@@ -433,13 +433,13 @@
     document.getElementById('new-cand-spec').value = '';
     renderAdminPanel(); loadCandidates();
   };
-
+ 
   window._removeCand = async (id) => {
     if (!confirm('Remover candidato?')) return;
     await deleteDoc(doc(db, 'candidates', id));
     renderAdminPanel(); loadCandidates();
   };
-
+ 
   window.resetVotes = async () => {
     if (!confirm('Zerar TODOS os votos? Esta ação não pode ser desfeita.')) return;
     for (const c of candidatesCache) await updateDoc(doc(db, 'candidates', c.id), { votes: 0 });
@@ -449,7 +449,7 @@
     for (const d of logSnap.docs) await deleteDoc(d.ref);
     renderAdminPanel();
   };
-
+ 
   window.changePass = async () => {
     const np = document.getElementById('new-pass').value.trim();
     if (!np || np.length < 4) { alert('Senha muito curta (mínimo 4 caracteres).'); return; }
@@ -457,7 +457,7 @@
     document.getElementById('new-pass').value = '';
     alert('Senha alterada com sucesso!');
   };
-
+ 
   window.exportCSV = () => {
     if (!voteLogCache.length) { alert('Nenhum voto para exportar.'); return; }
     const sorted = [...voteLogCache].sort((a, b) => (a.ts?.seconds || 0) - (b.ts?.seconds || 0));
@@ -469,7 +469,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'votos_diretor_clinico.csv'; a.click();
   };
-
+ 
   window.showTab = (tab) => {
     ['vote', 'admin'].forEach(t => {
       document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
@@ -479,13 +479,13 @@
     });
     if (tab === 'admin' && adminLogged) renderAdminPanel();
   };
-
+ 
   function setAlert(id, type, msg = '') {
     const el = document.getElementById(id);
     if (!msg) { el.innerHTML = ''; return; }
     el.innerHTML = `<div class="alert ${type}">${msg}</div>`;
   }
-
+ 
   init();
 </script>
 </body>
